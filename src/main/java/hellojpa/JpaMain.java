@@ -29,22 +29,24 @@ public class JpaMain {
          */
         try {
 
-            Member member = em.find(Member.class, 150L);
-            member.setName("AAAA");
+            Member member = new Member();
+            member.setUsername("A");
+
+            em.persist(member);
+
+            // Member member = em.find(Member.class, 150L);
+            // member.setName("AAAA");
 
             // 준영속 상태 / 영속성 컨텍스트에서 member entity 더 이상 관리 X
             // 그러므로 위의 update 쿼리 커밋 시점에 실행 안됌
             //em.detach(member);
 
             //영속성 컨테스트 통으로 초기화
-            em.clear();
+            // em.clear();
 
             // clear로 1차 캐시 삭제로 인해 다시 쿼리 실행
-            Member member2 = em.find(Member.class, 150L);
+            // Member member2 = em.find(Member.class, 150L);
 
-
-
-            System.out.println("===================");
 
             /**
              * 객체 값만 바꿔도 DB 값이 변경 되는 이유 !
