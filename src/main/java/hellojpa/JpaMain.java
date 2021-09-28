@@ -29,10 +29,28 @@ public class JpaMain {
          */
         try {
 
+            // 저장
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
+
             Member member = new Member();
-            member.setUsername("A");
+            member.setUsername("member1");
+            member.setTeam(team);
 
             em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            Member findMember = em.find(Member.class, member.getId());
+
+            // 쿼리가 안 나가는 이유
+            // 위에 쿼리를 사용해서 1차 캐시에 들어가 있느 상태라
+            // 1차캐시로 조회
+            Team findTeam = findMember.getTeam();
+            System.out.println("findTeam = " + findTeam.getName());
+
 
             // Member member = em.find(Member.class, 150L);
             // member.setName("AAAA");
