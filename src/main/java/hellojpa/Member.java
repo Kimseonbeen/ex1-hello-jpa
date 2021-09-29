@@ -20,6 +20,22 @@ public class Member {
 //    @Column(name = "TEAM_ID")
 //    private Long teamId;
 
+    /**
+     * 연관관계의 주인
+     *
+     * 양방향 매핑 규칙
+     *
+     * 객체의 두 관계중 하나를 연관관계의 주인으로 지정
+     * 연관관계의 주인만이 외래 키를 관리
+     * 주인이 아닌쪽은 읽기만 가능
+     * 주인은 mappedBy 속성 사용 X
+     * 주인이 아니면 mappedBy 속성으로 주인 지정
+     *
+     * 누구를 주인으로 ?
+     *
+     * 외래키가 있는 쪽을 주인으로 !
+     * 多 쪽이 주인이 된다
+     */
     @ManyToOne
     @JoinColumn(name = "TEAM_ID")
     private Team team;
@@ -44,8 +60,10 @@ public class Member {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void changeTeam(Team team) {
         this.team = team;
+
+        team.getMembers().add(this);    // 연관관계 편의 메소드를 생성하자 !
     }
     /*@Enumerated(EnumType.STRING)
     private RoleType roleType;

@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.List;
 
 public class JpaMain {
 
@@ -32,24 +33,39 @@ public class JpaMain {
             // 저장
             Team team = new Team();
             team.setName("TeamA");
+            /**
+             * 역방향(주인이 아닌 방향)만 연관관계 설정
+             * 가짜 매핑 주인이 아닌것에 데이터를 넣으면 반영 되지 않음
+             * 읽기 전용이다. JPA만 봤을 때는 add 하는 것이 아니지만
+             * 객체 관계를 고려하면 항상 양쪽다 값을 입력해야 한다.
+             */
+            // team.getMembers().add(member);
             em.persist(team);
 
             Member member = new Member();
             member.setUsername("member1");
-            member.setTeam(team);
-
+            member.changeTeam(team);
             em.persist(member);
 
-            em.flush();
-            em.clear();
+//            em.flush();
+//            em.clear();
 
-            Member findMember = em.find(Member.class, member.getId());
+            Team findTeam = em.find(Team.class, team.getId());  // 1차 캐시
+            List<Member> members = findTeam.getMembers();
 
+            // flush(), clear()를 하지 않고 그냥 1차 캐시에 있는것을 가져오면 list 컬렉션엔 member가 담겨 있지 않음
+            System.out.println("========================");
+            for (Member m : members) {
+                System.out.println("m.getUsername() = " + m.getUsername());
+            }
+            System.out.println("========================");
+
+
+           /* Member findMember = em.find(Member.class, member.getId());
             // 쿼리가 안 나가는 이유
             // 위에 쿼리를 사용해서 1차 캐시에 들어가 있느 상태라
             // 1차캐시로 조회
-            Team findTeam = findMember.getTeam();
-            System.out.println("findTeam = " + findTeam.getName());
+            List<Member> members = findMember.getTeam().getMembers();*/
 
 
             // Member member = em.find(Member.class, 150L);
